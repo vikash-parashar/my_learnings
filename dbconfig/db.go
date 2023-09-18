@@ -3,6 +3,8 @@
 package dbconfig
 
 import (
+	"my_learnings/models"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -27,7 +29,7 @@ func GetDB() *gorm.DB {
 
 // AutoMigrate performs auto migration for defined models
 func AutoMigrate() {
-	db.AutoMigrate(&Book{}, &Author{}, &User{}, &Address{}, &Order{})
+	db.AutoMigrate(&models.Book{}, &models.Author{}, &models.User{}, &models.Address{}, &models.Order{})
 }
 
 // GetHashedPasswordFromDB retrieves the hashed password from the PostgreSQL database based on the user's email.

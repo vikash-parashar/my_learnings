@@ -2,12 +2,17 @@ package helpers
 
 import (
 	"fmt"
+	"my_learnings/dbconfig"
 	"my_learnings/models"
 	"net/smtp"
 	"time"
 
 	"github.com/pquerna/otp/totp"
 	"github.com/sfreiberg/gotwilio"
+)
+
+var (
+	db, _ = dbconfig.InitDB()
 )
 
 // SendOTPEmail sends an OTP to the provided email address.
@@ -64,7 +69,7 @@ func SendOTPPhone(u models.User, otp string) error {
 func VerifyOTP(email, phone, code string) bool {
 	var storedOTP models.OTP
 	// Assuming you have a database connection using GORM
-	if err := models.GetDB().Where("email = ? OR phone = ?", email, phone).Last(&storedOTP).Error; err != nil {
+	if err := db.Where("email = ? OR phone = ?", email, phone).Last(&storedOTP).Error; err != nil {
 		return false
 	}
 
@@ -103,7 +108,7 @@ func StoreOTP(email, phone, code string, expiration time.Time) error {
 	}
 
 	// Store the OTP in the database using GORM
-	if err := models.GetDB().Create(&otpModel).Error; err != nil {
+	if err := db.Create(&otpModel).Error; err != nil {
 		return err
 	}
 
