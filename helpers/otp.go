@@ -1,34 +1,14 @@
 package helpers
 
 import (
-	"crypto/rand"
-	"encoding/base32"
-	"errors"
 	"fmt"
 	"my_learnings/models"
 	"net/smtp"
 	"time"
 
-	"github.com/twilio/twilio-go"
+	"github.com/pquerna/otp/totp"
+	"github.com/sfreiberg/gotwilio"
 )
-
-// GenerateOTP generates a random OTP code.
-func GenerateOTP(length int) (string, error) {
-	if length%2 != 0 {
-		return "", errors.New("OTP length must be even")
-	}
-
-	// Generate a random byte slice
-	randomBytes := make([]byte, length/2)
-	_, err := rand.Read(randomBytes)
-	if err != nil {
-		return "", err
-	}
-
-	// Encode the random bytes as a base32 string
-	otp := base32.StdEncoding.EncodeToString(randomBytes)
-	return otp[:length], nil
-}
 
 // SendOTPEmail sends an OTP to the provided email address.
 func SendOTPEmail(user models.User, otp string) error {
@@ -55,26 +35,24 @@ func SendOTPEmail(user models.User, otp string) error {
 	return nil
 }
 
-// SendOTPPhone sends an OTP to the provided phone number using Twilio.
-func SendOTPPhone(user models.User, otp string) error {
-	// Your Twilio Account SID and Auth Token
-	accountSID := "your-account-sid"
-	authToken := "your-auth-token"
+// SendOTPPhone sends an OTP to the provided phone number.
+func SendOTPPhone(u models.User, otp string) error {
+	// Generate a new TOTP key
+	_, err := totp.Generate(totp.GenerateOpts{
+		Issuer:      "YourApp",
+		AccountName: u.Phone,
+	})
+	if err != nil {
+		return err
+	}
 
-	// Create a Twilio client
-	client := twilio.NewRestClient(accountSID, authToken)
+	// Get the OTP URL
+	// otpURL := key.URL()
 
-	// Replace with your Twilio phone number (must be a purchased Twilio number)
-	from := "your-twilio-phone-number"
-
-	// Phone number to which OTP will be sent (in E.164 format, e.g., +1234567890)
-	to := user.Phone
-
-	// Create the message body
+	// Use the OTP URL to send the OTP to the user's phone number using Twilio
+	twilio := gotwilio.NewTwilioClient("your-account-sid", "your-auth-token")
 	message := "Your OTP is: " + otp
-
-	// Send the message
-	_, err := client.Messages.SendMessage(from, to, message, nil)
+	_, _, err = twilio.SendSMS("your-twilio-phone-number", u.Phone, message, "", "")
 	if err != nil {
 		return err
 	}
@@ -95,4 +73,39 @@ func VerifyOTP(email, phone, code string) bool {
 		return true
 	}
 	return false
+}
+
+// GenerateOTP generates a new OTP and returns the OTP URL.
+func GenerateOTP() (string, error) {
+	// Generate a new TOTP key
+	key, err := totp.Generate(totp.GenerateOpts{
+		Issuer:      "YourApp",
+		AccountName: "user@example.com",
+	})
+	if err != nil {
+		return "", err
+	}
+
+	// Get the OTP URL
+	otpURL := key.URL()
+
+	return otpURL, nil
+}
+
+// StoreOTP stores an OTP in the database.
+func StoreOTP(email, phone, code string, expiration time.Time) error {
+	// Create an OTP model
+	otpModel := models.OTP{
+		Email:     email,
+		Phone:     phone,
+		Code:      code,
+		ExpiresAt: expiration,
+	}
+
+	// Store the OTP in the database using GORM
+	if err := models.GetDB().Create(&otpModel).Error; err != nil {
+		return err
+	}
+
+	return nil
 }

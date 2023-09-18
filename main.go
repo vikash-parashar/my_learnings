@@ -1,14 +1,11 @@
 package main
 
 import (
-	"fmt"
-	"log"
 	"my_learnings/dbconfig"
+	"my_learnings/middleware"
 	"my_learnings/routes"
-	"net/http"
-	"os"
 
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -17,17 +14,16 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	// db.Debug()
-	r := mux.NewRouter()
 
-	// Setup routes for different models using the centralized SetupRoutes function
+	// Create a new Gin router
+	r := gin.Default()
+
+	// Use the AuthMiddleware for all routes
+	r.Use(middleware.AuthMiddleware)
+
+	// Initialize routes
 	routes.SetupRoutes(r)
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
-	}
-
-	fmt.Printf("Server is running on port %s...\n", port)
-	log.Fatal(http.ListenAndServe(":"+port, r))
+	// Start the server
+	r.Run(":8080")
 }

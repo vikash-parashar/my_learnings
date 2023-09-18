@@ -1,45 +1,26 @@
 // controllers/book_controller.go
-
 package controllers
 
 import (
-	"encoding/json"
-	"my_learnings/models"
-	"net/http"
+	"github.com/gin-gonic/gin"
 )
 
-// GetBooks returns a list of books.
-func GetBooks(w http.ResponseWriter, r *http.Request) {
-	var books []models.Book
-
-	// Retrieve books from the database using GORM
-	if err := models.GetDB().Find(&books).Error; err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	// Serialize books to JSON and send the response
-	json.NewEncoder(w).Encode(books)
+func ListBooks(c *gin.Context) {
+	// Implement logic to fetch and return a list of books
 }
 
-// CreateBook creates a new book.
-func CreateBook(w http.ResponseWriter, r *http.Request) {
-	var book models.Book
-
-	// Decode the request body into a book object
-	if err := json.NewDecoder(r.Body).Decode(&book); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	// Create the book in the database using GORM
-	if err := models.GetDB().Create(&book).Error; err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	// Serialize the created book to JSON and send the response
-	json.NewEncoder(w).Encode(book)
+func GetBook(c *gin.Context) {
+	// Implement logic to fetch a specific book by ID
 }
 
-// Other controller functions for updating, deleting, and handling specific book operations.
+func CreateBook(c *gin.Context) {
+	// Implement logic to create a new book
+}
+
+func UpdateBook(c *gin.Context) {
+	// Implement logic to update an existing book by ID
+}
+
+func DeleteBook(c *gin.Context) {
+	// Implement logic to delete a book by ID
+}

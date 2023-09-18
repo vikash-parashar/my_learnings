@@ -1,45 +1,26 @@
-// controllers/author_controller.go
-
+// controllers/Author_controller.go
 package controllers
 
 import (
-	"encoding/json"
-	"my_learnings/models"
-	"net/http"
+	"github.com/gin-gonic/gin"
 )
 
-// GetAuthors returns a list of authors.
-func GetAuthors(w http.ResponseWriter, r *http.Request) {
-	var authors []models.Author
-
-	// Retrieve authors from the database using GORM
-	if err := models.GetDB().Find(&authors).Error; err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	// Serialize authors to JSON and send the response
-	json.NewEncoder(w).Encode(authors)
+func ListAuthors(c *gin.Context) {
+	// Implement logic to fetch and return a list of Authors
 }
 
-// CreateAuthor creates a new author.
-func CreateAuthor(w http.ResponseWriter, r *http.Request) {
-	var author models.Author
-
-	// Decode the request body into an author object
-	if err := json.NewDecoder(r.Body).Decode(&author); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	// Create the author in the database using GORM
-	if err := models.GetDB().Create(&author).Error; err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	// Serialize the created author to JSON and send the response
-	json.NewEncoder(w).Encode(author)
+func GetAuthor(c *gin.Context) {
+	// Implement logic to fetch a specific Author by ID
 }
 
-// Other controller functions for updating, deleting, and handling specific author operations.
+func CreateAuthor(c *gin.Context) {
+	// Implement logic to create a new Author
+}
+
+func UpdateAuthor(c *gin.Context) {
+	// Implement logic to update an existing Author by ID
+}
+
+func DeleteAuthor(c *gin.Context) {
+	// Implement logic to delete a Author by ID
+}

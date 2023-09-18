@@ -1,19 +1,19 @@
+// routes/author_routes.go
 package routes
 
 import (
 	"my_learnings/controllers"
-	"net/http"
 
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 )
 
-// SetupAuthorRoutes sets up routes for the Author model
-func SetupAuthorRoutes(r *mux.Router) {
-	authorRouter := r.PathPrefix("/authors").Subrouter()
-
-	authorRouter.HandleFunc("/", controllers.GetAuthors).Methods(http.MethodGet)
-	// authorRouter.HandleFunc("/{id}", controllers.GetAuthorByID).Methods(http.MethodGet)
-	authorRouter.HandleFunc("/", controllers.CreateAuthor).Methods(http.MethodPost)
-	// authorRouter.HandleFunc("/{id}", controllers.UpdateAuthor).Methods(http.MethodPut)
-	// authorRouter.HandleFunc("/{id}", controllers.DeleteAuthor).Methods(http.MethodDelete)
+func SetupAuthorRoutes(r *gin.RouterGroup) {
+	author := r.Group("/author")
+	{
+		author.GET("/", controllers.ListAuthors)
+		author.GET("/:id", controllers.GetAuthor)
+		author.POST("/", controllers.CreateAuthor)
+		author.PUT("/:id", controllers.UpdateAuthor)
+		author.DELETE("/:id", controllers.DeleteAuthor)
+	}
 }

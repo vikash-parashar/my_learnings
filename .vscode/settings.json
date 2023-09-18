@@ -5,8 +5,11 @@
         "foreignkey",
         "gomail",
         "gorm",
+        "gotwilio",
         "OTPSMS",
         "sslmode",
+        "tmpl",
+        "totp",
         "vikash"
     ]
 }

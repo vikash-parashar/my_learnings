@@ -1,19 +1,19 @@
+// routes/book_routes.go
 package routes
 
 import (
 	"my_learnings/controllers"
-	"net/http"
 
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 )
 
-// SetupBookRoutes sets up routes for the Book model
-func SetupBookRoutes(r *mux.Router) {
-	bookRouter := r.PathPrefix("/books").Subrouter()
-
-	bookRouter.HandleFunc("/", controllers.GetBooks).Methods(http.MethodGet)
-	// bookRouter.HandleFunc("/{id}", controllers.GetBookByID).Methods(http.MethodGet)
-	bookRouter.HandleFunc("/", controllers.CreateBook).Methods(http.MethodPost)
-	// bookRouter.HandleFunc("/{id}", controllers.UpdateBook).Methods(http.MethodPut)
-	// bookRouter.HandleFunc("/{id}", controllers.DeleteBook).Methods(http.MethodDelete)
+func SetupBookRoutes(r *gin.RouterGroup) {
+	book := r.Group("/book")
+	{
+		book.GET("/", controllers.ListBooks)
+		book.GET("/:id", controllers.GetBook)
+		book.POST("/", controllers.CreateBook)
+		book.PUT("/:id", controllers.UpdateBook)
+		book.DELETE("/:id", controllers.DeleteBook)
+	}
 }

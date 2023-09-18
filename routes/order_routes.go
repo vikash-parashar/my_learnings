@@ -1,19 +1,19 @@
+// routes/order_routes.go
 package routes
 
 import (
 	"my_learnings/controllers"
-	"net/http"
 
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 )
 
-// SetupOrderRoutes sets up routes for the Order model
-func SetupOrderRoutes(r *mux.Router) {
-	orderRouter := r.PathPrefix("/orders").Subrouter()
-
-	orderRouter.HandleFunc("/", controllers.GetOrders).Methods(http.MethodGet)
-	// orderRouter.HandleFunc("/{id}", controllers.GetOrderByID).Methods(http.MethodGet)
-	orderRouter.HandleFunc("/", controllers.CreateOrder).Methods(http.MethodPost)
-	// orderRouter.HandleFunc("/{id}", controllers.UpdateOrder).Methods(http.MethodPut)
-	// orderRouter.HandleFunc("/{id}", controllers.DeleteOrder).Methods(http.MethodDelete)
+func SetupOrderRoutes(r *gin.RouterGroup) {
+	order := r.Group("/order")
+	{
+		order.GET("/", controllers.ListOrders)
+		order.GET("/:id", controllers.GetOrder)
+		order.POST("/", controllers.CreateOrder)
+		order.PUT("/:id", controllers.UpdateOrder)
+		order.DELETE("/:id", controllers.DeleteOrder)
+	}
 }
