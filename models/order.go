@@ -16,7 +16,6 @@ type (
 // Order represents an order model with book and user details
 type Order struct {
 	gorm.Model
-	ID        uint      `gorm:"primary_key" json:"id"`
 	BookID    uint      `json:"book_id"`
 	Book      Book      `gorm:"foreignkey:BookID" json:"book"`
 	UserID    uint      `json:"user_id"`

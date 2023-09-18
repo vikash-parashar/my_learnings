@@ -11,7 +11,6 @@ const (
 // User represents a user model with address details
 type User struct {
 	gorm.Model
-	ID        uint     `gorm:"primary_key" json:"id"`
 	FirstName string   `json:"first_name"`
 	LastName  string   `json:"last_name"`
 	Email     string   `json:"email"`
