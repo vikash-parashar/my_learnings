@@ -1,7 +1,21 @@
 package models
 
+import "gorm.io/gorm"
+
+const (
+	OrderTypeBuy  OrderType = "Buy"
+	OrderTypeRent OrderType = "Rent"
+)
+
+// Define types for order and user types
+type (
+	OrderType string
+	UserType  string
+)
+
 // Order represents an order model with book and user details
 type Order struct {
+	gorm.Model
 	ID        uint      `gorm:"primary_key" json:"id"`
 	BookID    uint      `json:"book_id"`
 	Book      Book      `gorm:"foreignkey:BookID" json:"book"`

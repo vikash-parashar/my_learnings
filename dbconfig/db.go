@@ -16,11 +16,28 @@ func InitDB() (*gorm.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	AutoMigrate()
 	return db, nil
 }
 
 // Export this function to access the DB instance from other packages
 func GetDB() *gorm.DB {
 	return db
+}
+
+// AutoMigrate performs auto migration for defined models
+func AutoMigrate() {
+	db.AutoMigrate(&Book{}, &Author{}, &User{}, &Address{}, &Order{})
+}
+
+// GetHashedPasswordFromDB retrieves the hashed password from the PostgreSQL database based on the user's email.
+func GetHashedPasswordFromDB(db *gorm.DB, email string) (string, error) {
+	// Implement the SQL query to fetch the hashed password based on the email
+	var hashedPassword string
+	err := db.Raw("SELECT password FROM users WHERE email = ?", email).Scan(&hashedPassword).Error
+	if err != nil {
+		return "", err
+	}
+
+	return hashedPassword, nil
 }

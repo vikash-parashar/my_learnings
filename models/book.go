@@ -1,7 +1,10 @@
 package models
 
+import "gorm.io/gorm"
+
 // Book represents a book model with author details
 type Book struct {
+	gorm.Model
 	ID       uint    `gorm:"primary_key" json:"id"`
 	Title    string  `json:"title"`
 	AuthorID uint    `json:"author_id"`

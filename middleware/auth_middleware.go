@@ -11,3 +11,6 @@ func AuthMiddleware(c *gin.Context) {
 	// If not authenticated, you can redirect or return an error response
 	// If authenticated, you can proceed to the next middleware or handler
 }
+
+
+
